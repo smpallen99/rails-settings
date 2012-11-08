@@ -5,10 +5,6 @@ ActiveRecord::Base.class_eval do
         ScopedSettings.for_target(self)
       end
 
-      def self.settings
-        ScopedSettings.for_target(self)
-      end
-
       def settings=(hash)
         hash.each { |k,v| settings[k] = v }
       end

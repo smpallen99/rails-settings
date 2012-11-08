@@ -142,10 +142,14 @@ class SettingsTest < Test::Unit::TestCase
   end
   
   def test_association_merge
-    user = User.create! :name => 'Mr. Foo'
-    user.settings.merge! :foo, { :one => 1, :two => 2}
+    user1 = User.create! :name => 'Mr. Foo'
+    user1.settings.merge! :foo, { :one => 1, :two => 2}
 
-    assert_equal({:one => 1, :two => 2}, user.settings.foo)
+    user2 = User.create! :name => 'Mr. Foo'
+    user2.settings.merge! :foo, { :three => 3}
+
+    assert_equal({:one => 1, :two => 2}, user1.settings.foo)
+    assert_equal({:three => 3 }, user2.settings.foo)
   end
   
   def test_destroy
@@ -165,25 +169,6 @@ class SettingsTest < Test::Unit::TestCase
     assert_setting(nil, 'test3')
   end
   
-  def test_class_level_settings
-    assert_equal User.settings.name, "ScopedSettings"
-  end
-
-  def test_object_inherits_class_settings_before_default
-    Settings.defaults[:foo] = 'global default'
-    User.settings.foo = 'model default'
-    
-    user = User.create! :name => 'Dwight'
-    
-    assert_equal user.settings.foo, 'model default'
-    assert_equal 'global default', Settings.foo
-  end
-
-  def test_class_inherits_default_settings
-    Settings.defaults[:foo] = 'bar'
-    assert_equal User.settings.foo, 'bar'
-  end
-
   def test_sets_settings_with_hash
     user = User.create! :name => 'Mr. Foo'
     user.settings[:one] = '1'
@@ -201,14 +186,6 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal({ 'foo' => 'bar' }, user.settings.all)
   end
   
-  def test_issue_18
-    Settings.one = 'value1'
-    User.settings.two = 'value2'
-    
-    assert_equal({'two' => 'value2'}, User.settings.all)
-  end
-  
-
   private
     def assert_setting(value, key, scope_target=nil)
       key = key.to_sym

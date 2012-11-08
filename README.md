@@ -119,18 +119,9 @@ Now even if the database is completely empty, you app will have some intelligent
     Settings.foo
     # => 'footastic'
 
-Defaults can be defined on the model level, too:
-
-    User.settings.foo = 'bar'
-    User.find(123).settings.foo
-    # => 'bar'
-
-If the setting doesn't exist on the object or the model, you'll get the default, as expected:
+If the setting doesn't exist, you'll get the default, as expected:
 
     Settings.defaults[:some_default] = 'foo'
-    
-    User.settings.some_default
-    # => 'foo'
     
     User.find(123).settings.some_default
     # => 'foo'

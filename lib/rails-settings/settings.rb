@@ -60,11 +60,7 @@ class Settings < ActiveRecord::Base
     if var = target(var_name)
       var.value
     else
-      if target_id.nil?
-        defaults[var_name.to_s]
-      else
-        target_type.constantize.settings[var_name.to_s]
-      end
+      defaults[var_name.to_s]
     end
   end
   
