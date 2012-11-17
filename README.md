@@ -4,6 +4,11 @@
 
 Settings is a gem/plugin that makes managing a table of key/value pairs easy. Think of it like a Hash stored in you database, that uses simple ActiveRecord like methods for manipulation. Keep track of any setting that you don't want to hard code into your rails app. You can store any kind of object: Strings, numbers, arrays, or any object which can be noted as YAML.
 
+Settings defaults can be loaded from multiple yml files as inspired by Christopher J. Bottaro's config_spartan gem. Settings
+files support the following features:
+  * YAML config files
+  * ERB support in the config files
+  * Nested attributes
 
 ## Requirements
 
@@ -42,7 +47,7 @@ You have to create the table used by the Settings model by using this migration:
         drop_table :settings
       end
     end
-    
+
 Now update your database with:
 
     rake db:migrate
@@ -103,7 +108,7 @@ Then you can set/get a setting for a given user instance just by doing this:
     user.settings.color = :red
     user.settings.color
     # => :red
-    
+
     user.settings.all
     # => { "color" => :red }
 
@@ -113,7 +118,7 @@ specified value even if they are not in the database.  Make a new file in config
 with the following:
 
     Settings.defaults[:foo] = 'footastic'
-  
+
 Now even if the database is completely empty, you app will have some intelligent defaults:
 
     Settings.foo
@@ -128,10 +133,10 @@ Defaults can be defined on the model level, too:
 If the setting doesn't exist on the object or the model, you'll get the default, as expected:
 
     Settings.defaults[:some_default] = 'foo'
-    
+
     User.settings.some_default
     # => 'foo'
-    
+
     User.find(123).settings.some_default
     # => 'foo'
 
@@ -140,13 +145,13 @@ I you want to find users having or not having some settings, there are named sco
 
     User.with_settings
     # returns a scope of users having any setting
-    
+
     User.with_settings_for('color')
     # returns a scope of users having a 'color' setting
-  
+
     User.without_settings
     # returns a scope of users having no setting at all (means user.settings.all == {})
-    
+
     User.without_settings('color')
     # returns a scope of users having no 'color' setting (means user.settings.color == nil)
 

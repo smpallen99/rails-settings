@@ -241,6 +241,25 @@ class SettingsTest < Test::Unit::TestCase
     assert_equal "end", Settings.finally
   end
 
+  def test_that_file_based_are_defaults
+    Settings.setup { file("test/config2.yml") }
+    assert_equal("prod.something.com", Settings.host)
+    Settings.host = "something else"
+    assert_equal("something else", Settings.host)
+    Settings.destroy 'host'
+    assert_equal("prod.something.com", Settings.host)
+  end
+
+  def test_nexted_file_based_are_defaults
+    Settings.setup { file("test/config2.yml") }
+    assert_equal "coco", Settings['nest.name.fname']
+    Settings['nest.name.fname'] = "freedie"
+    assert_equal "freedie", Settings['nest.name.fname']
+    Settings.destroy 'nest.name.fname'
+    assert_equal "coco", Settings['nest.name.fname']
+
+  end
+
   private
     def assert_setting(value, key, scope_target=nil)
       key = key.to_sym

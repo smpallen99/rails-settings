@@ -99,7 +99,7 @@ class Settings < ActiveRecord::Base
         self.deep_parse!(v, val)
       else
         k = "#{key}.#{k}" if key
-        self[k] = v
+        self.defaults[k] = v
       end
     end
   end
