@@ -1,0 +1,11 @@
+host: prod.something.com
+urls:
+  - www.bing.com
+  - www.cuil.com
+nest:
+  something: blah
+  name:
+    fname: coco
+    lname: bottaro
+  back: here
+finally: end
