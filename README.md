@@ -155,4 +155,34 @@ I you want to find users having or not having some settings, there are named sco
     User.without_settings('color')
     # returns a scope of users having no 'color' setting (means user.settings.color == nil)
 
+Load defaults from config files with something like this...
+
+    # config/base.yml
+    app_name:  MyCoolApp
+    domain:  mycoolapp.com
+    lib_dir: <%= "#{Rails.root}/lib" %>
+    aws:
+      access_key: 123ABC
+      secret_key: ABC123
+
+    # config/development.yml
+    domain:  dev.mycoolapp.com
+
+    # config/initializers/settings.rb
+    Settings.setup do
+      file "#{Rails.root}/config/base.yml"
+      file "#{Rails.root}/config/#{Rails.env}.yml"
+    end
+
+Now fire up a Rails console (using the development environment)...
+
+    > Settings.lib_dir
+    => "/Users/spallen/my_cool_app/lib"
+    > Settings.aws.access_key
+    => "123ABC"
+    > Settings["aws"]["secret_key"]
+    => "ABC123"
+    > Settings.domain
+    => "dev.mycoolapp.com"
+
 That's all there is to it! Enjoy!
