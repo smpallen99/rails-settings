@@ -1,4 +1,5 @@
 class Settings < ActiveRecord::Base
+  attr_accessible :var, :value, :target_type
   class SettingNotFound < RuntimeError; end
 
   cattr_accessor :defaults
@@ -123,6 +124,10 @@ class Settings < ActiveRecord::Base
   #set the value field, YAML encoded
   def value=(new_value)
     self[:value] = new_value.to_yaml
+  end
+
+  def value_before_type_cast
+    value
   end
 
   def self.target_scoped

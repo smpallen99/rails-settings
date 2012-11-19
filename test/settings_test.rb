@@ -260,6 +260,15 @@ class SettingsTest < Test::Unit::TestCase
 
   end
 
+  def test_create_instance
+    setting = Settings.create var: 'one', value: 'value4'
+    assert_equal('value4', Settings.one)
+  end
+
+  def test_before_type_cast_returns_correct_value
+    Settings.one = 'value1'
+    assert_equal('value1', Settings.find_by_var('one').value_before_type_cast)
+  end
   private
     def assert_setting(value, key, scope_target=nil)
       key = key.to_sym
