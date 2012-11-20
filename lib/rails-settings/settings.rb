@@ -1,9 +1,17 @@
+
 class Settings < ActiveRecord::Base
   attr_accessible :var, :value, :target_type
   class SettingNotFound < RuntimeError; end
 
-  cattr_accessor :defaults
-  self.defaults = {}.with_indifferent_access
+  @@defaults = Defaults.new
+
+  def self.defaults
+    @@defaults
+  end
+
+  def self.defaults=(defs)
+    @@defaults = Defaults.new defs
+  end
 
   # Support old plugin
   if defined?(SettingsDefaults::DEFAULTS)
@@ -31,11 +39,15 @@ class Settings < ActiveRecord::Base
     end
   end
 
+  def self.[]=(var_name, val)
+
+  end
   #destroy the specified settings record
   def self.destroy(var_name)
     var_name = var_name.to_s
     begin
-      target(var_name).destroy
+      target(var_name).value  # force exception if needed
+      eval "Settings['#{var_name}'] = Settings.defaults['#{var_name}']"
       true
     rescue NoMethodError
       raise SettingNotFound, "Setting variable \"#{var_name}\" not found"

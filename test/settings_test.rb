@@ -19,7 +19,7 @@ class SettingsTest < Test::Unit::TestCase
   def test_defaults
     Settings.defaults[:foo] = 'default foo'
 
-    assert_nil Settings.target(:foo)
+    #assert_nil Settings.target(:foo)
     assert_equal 'default foo', Settings.foo
 
     Settings.foo = 'bar'
@@ -35,6 +35,11 @@ class SettingsTest < Test::Unit::TestCase
   def tests_defaults_false
     Settings.defaults[:foo] = false
     assert_equal false, Settings.foo
+  end
+
+  def test_default_saved_to_database
+    Settings.defaults[:database] = 'true'
+    assert_equal 'true', Settings.find_by_var('database').value
   end
 
   def test_get
@@ -268,6 +273,16 @@ class SettingsTest < Test::Unit::TestCase
   def test_before_type_cast_returns_correct_value
     Settings.one = 'value1'
     assert_equal('value1', Settings.find_by_var('one').value_before_type_cast)
+  end
+
+  def test_defaults_after_destroy
+    Settings.defaults[:test_defaults] = 'default value'
+    assert_equal('default value', Settings.test_defaults)
+    Settings.test_defaults = "something else"
+    assert_equal('something else', Settings.test_defaults)
+    Settings.destroy :test_defaults
+    assert_equal('default value', Settings.test_defaults)
+    assert_equal('default value', Settings.target(:test_defaults).value)
   end
   private
     def assert_setting(value, key, scope_target=nil)
